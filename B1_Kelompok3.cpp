@@ -726,43 +726,16 @@ Node *jumpSearchByPrice(Node *head, double key)
     return current; // Jika ditemukan, kembalikan node saat ini
 }
 
-// Menampilkan hasil pencarian kamar
-void displaySearchResult(const string &searchType, Node *result)
-{
-    Node *current = head;
-    if (result)
-    {
-        // Lakukan sesuatu dengan hasil pencarian, misalnya, tampilkan informasinya.
-        cout << "Data ditemukan: " << searchType << endl;
-        cout << "Data tambahan:" << endl;
-                    cout << "================================================================" << endl;
-                    cout << "| ID   | Jenis Kamar | Nomor Kamar | Status            | Harga    |" << endl;
-                    cout << "----------------------------------------------------------------" << endl;
-                    cout << "| " << setw(4) << current->data.id << " | "
-                         << setw(11) << current->data.jenis_kamar << " | "
-                         << setw(11) << current->data.no_kamar << " | "
-                         << setw(17) << current->data.status << " | "
-                         << setw(8) << current->data.harga << " |" << endl;
-                    cout << "================================================================" << endl;
 
-        // Menampilkan informasi tambahan berdasarkan jenis pencarian
-        if (searchType == "Jenis Kamar")
-        {
-            cout << result->data.jenis_kamar << endl;
-        }
-        else if (searchType == "Nomor Kamar")
-        {
-            cout << result->data.no_kamar << endl;
-        }
-        else if (searchType == "Harga Kamar")
-        {
-            cout << result->data.harga << endl;
-        }
-    }
-    else
-    {
-        cout << "Data tidak ditemukan." << endl;
-    }
+// Menampilkan hasil pencarian kamar
+void displayRoomDetails(const room &data) {
+    cout << "============================================" << endl;
+    cout << "ID Kamar: " << data.id << endl;
+    cout << "Nama Kamar: " << data.jenis_kamar << endl;
+    cout << "Nomor Kamar: " << data.no_kamar << endl;
+    cout << "Status Kamar: " << data.status << endl;
+    cout << "Harga Kamar: " << data.harga << endl;
+    cout << "============================================" << endl;
 }
 
 // Menampilkan informasi pengguna dari file CSV
@@ -899,10 +872,15 @@ void user(string username)
             if (pilih == 1)
             {
                 string cari;
-                cout << "Cari jenis: ";
-                getline(cin, cari); // Menggunakan getline untuk membaca jenis kamar yang mengandung spasi
+                cout << "Cari nama: ";
+                getline(cin, cari);
                 Node *result = searchByJenis(cari, head);
-                displaySearchResult("Jenis Kamar", result);
+                if (result) {
+                    cout << "Data ditemukan:" <<endl;
+                    displayRoomDetails(result->data);
+                } else {
+                    cout << "Data tidak ditemukan." << endl;
+                }
                 system("pause");
             }
             else if (pilih == 2)
@@ -911,7 +889,12 @@ void user(string username)
                 cout << "Cari nomor: ";
                 cin >> cari;
                 Node *result = jumpSearchByNumber(head, cari);
-                displaySearchResult("Nomor Kamar", result);
+                if (result) {
+                    cout << "Data ditemukan:" << endl;
+                    displayRoomDetails(result->data);
+                } else {
+                    cout << "Data tidak ditemukan." << endl;
+                }
                 system("pause");
             }
             else if (pilih == 3)
@@ -920,7 +903,12 @@ void user(string username)
                 cout << "Cari harga: ";
                 cin >> cari;
                 Node *result = jumpSearchByPrice(head, cari);
-                displaySearchResult("Harga Kamar", result);
+                if (result) {
+                    cout << "Data ditemukan:" << endl;
+                    displayRoomDetails(result->data);
+                } else {
+                    cout << "Data tidak ditemukan." << endl;
+                }
                 system("pause");
             }
 
@@ -1080,10 +1068,15 @@ void admin()
             if (pilih == 1)
             {
                 string cari;
-                cout << "Cari jenis: ";
-                getline(cin, cari); // Menggunakan getline untuk membaca jenis kamar yang mengandung spasi
+                cout << "Cari nama: ";
+                getline(cin, cari);
                 Node *result = searchByJenis(cari, head);
-                displaySearchResult("Jenis Kamar", result);
+                if (result) {
+                    cout << "Data ditemukan:" <<endl;
+                    displayRoomDetails(result->data);
+                } else {
+                    cout << "Data tidak ditemukan." << endl;
+                }
                 system("pause");
             }
             else if (pilih == 2)
@@ -1092,7 +1085,12 @@ void admin()
                 cout << "Cari nomor: ";
                 cin >> cari;
                 Node *result = jumpSearchByNumber(head, cari);
-                displaySearchResult("Nomor Kamar", result);
+                if (result) {
+                    cout << "Data ditemukan:" << endl;
+                    displayRoomDetails(result->data);
+                } else {
+                    cout << "Data tidak ditemukan." << endl;
+                }
                 system("pause");
             }
             else if (pilih == 3)
@@ -1101,9 +1099,15 @@ void admin()
                 cout << "Cari harga: ";
                 cin >> cari;
                 Node *result = jumpSearchByPrice(head, cari);
-                displaySearchResult("Harga Kamar", result);
+                if (result) {
+                    cout << "Data ditemukan:" << endl;
+                    displayRoomDetails(result->data);
+                } else {
+                    cout << "Data tidak ditemukan." << endl;
+                }
                 system("pause");
             }
+
 
             break;
         case 7:
