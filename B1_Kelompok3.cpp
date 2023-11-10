@@ -95,24 +95,26 @@ void updateIds(Node *head)
     nextRoomId = newId;
 }
 
-//Memeriksa ketersediaan kamar berdasarkan nomor kamar.
+//Memeriksa ketersediaan kamar berdasarkan nomor kamar dan status kamar.
 bool isRoomAvailable(Node* head, int no_kamar) {
     Node* current = head;
     while (current != nullptr) {
-        if (current->data.no_kamar == no_kamar) {
+        if (current->data.no_kamar == no_kamar && current->data.status == "available") {
             Reservation* reservation = current->reservations;
             while (reservation != nullptr) {
                 if (reservation->no_kamar == no_kamar) {
-                    return false;
+                    return false; // Kamar tidak tersedia karena sudah dipesan
                 }
                 reservation = reservation->next;
             }
-            return true;
+            return true; // Kamar tersedia dan statusnya "available"
         }
         current = current->next;
     }
     return false;
 }
+
+
 
 //menu untuk menampilkan data kamar
 void display(Node *head) {
@@ -212,12 +214,14 @@ void createReservation(Node* head, string username) {
                 // Menandai kamar sebagai "reserved"
                 current->data.status = "reserved";
                 cout << "Reservasi berhasil! Nomor reservasi Anda adalah: " << newReservation->reservationId << endl;
+                Sleep(1000);
                 return;
             }
             current = current->next;
         }
     } else {
-        cout << "Maaf, kamar yang Anda pilih sudah dipesan. Silakan pilih kamar lain.\n";
+        cout << "Maaf, Kamar yang Anda pilih sudah dipesan atau kamar tersebut tidak tersedia." << endl;
+        Sleep(2000);
     }
 }
 
@@ -370,6 +374,12 @@ void viewReservationHistory() {
         return;
     }
 
+    if (head == nullptr) //mengecek apakah data ada 
+    {
+        cout << "Histori Reservasi Masih Kosong." << endl;
+        return;
+    }
+
     const int idResWidth = 13;
     const int usnWidth = 14;
     const int noKamarWidth = 12;
@@ -500,9 +510,9 @@ void sortListByName(Node *head) {
 
     // Menampilkan data yang sudah diurutkan
     cout << "\nHasil Pengurutan Berdasarkan Jenis Kamar:" << endl;
-    cout << "================================================================" << endl;
+    cout << "===================================================================" << endl;
     cout << "| ID   | Jenis Kamar | Nomor Kamar | Status            | Harga    |" << endl;
-    cout << "----------------------------------------------------------------" << endl;
+    cout << "-------------------------------------------------------------------" << endl;
     for (const Node &room : roomList) {
         cout << "| " << setw(4) << room.data.id << " | "
              << setw(11) << room.data.jenis_kamar << " | "
@@ -510,7 +520,7 @@ void sortListByName(Node *head) {
              << setw(17) << room.data.status << " | "
              << setw(8) << room.data.harga << " |" << endl;
     }
-    cout << "================================================================" << endl;
+    cout << "===================================================================" << endl;
 }
 
 // Fungsi pengurutan berdasarkan nomor kamar
@@ -534,9 +544,9 @@ void sortListByNumber(Node *head) {
 
     // Menampilkan data yang sudah diurutkan
     cout << "Hasil Pengurutan Berdasarkan Nomor Kamar:" << endl;
-    cout << "================================================================" << endl;
+    cout << "===================================================================" << endl;
     cout << "| ID   | Jenis Kamar | Nomor Kamar | Status            | Harga    |" << endl;
-    cout << "----------------------------------------------------------------" << endl;
+    cout << "-------------------------------------------------------------------" << endl;
     for (const Node &room : roomList) {
         cout << "| " << setw(4) << room.data.id << " | "
              << setw(11) << room.data.jenis_kamar << " | "
@@ -544,7 +554,7 @@ void sortListByNumber(Node *head) {
              << setw(17) << room.data.status << " | "
              << setw(8) << room.data.harga << " |" << endl;
     }
-    cout << "================================================================" << endl;
+    cout << "===================================================================" << endl;
 }
 
 // Fungsi pengurutan berdasarkan harga kamar
@@ -568,9 +578,9 @@ void sortListByPrice(Node *head) {
 
     // Menampilkan data yang sudah diurutkan
     cout << "Hasil Pengurutan Berdasarkan Harga Kamar:" << endl;
-    cout << "================================================================" << endl;
+    cout << "===================================================================" << endl;
     cout << "| ID   | Jenis Kamar | Nomor Kamar | Status            | Harga    |" << endl;
-    cout << "----------------------------------------------------------------" << endl;
+    cout << "-------------------------------------------------------------------" << endl;
     for (const Node &room : roomList) {
         cout << "| " << setw(4) << room.data.id << " | "
              << setw(11) << room.data.jenis_kamar << " | "
@@ -578,7 +588,7 @@ void sortListByPrice(Node *head) {
              << setw(17) << room.data.status << " | "
              << setw(8) << room.data.harga << " |" << endl;
     }
-    cout << "================================================================" << endl;
+    cout << "===================================================================" << endl;
 }
 
 // Fungsi sortingMenu untuk memudahkan pengguna memilih jenis pengurutan
@@ -744,19 +754,21 @@ void viewUsers()
     ifstream file("user.csv");
     if (!file.is_open())
     {
-        cout << "Gagal membuka file pengguna." << endl;
+        cout << "Gagal membuka file pelanggan." << endl;
         return;
     }
 
-    cout << "Data Pengguna:" << endl;
-    cout << "========================" << endl;
+    cout << "=============================" << endl;   
+    cout << "|     Data Pelanggan :      |" << endl;
+    cout << "-----------------------------" << endl;
 
     User user;
     while (file >> user.username >> user.password)
     {
-        cout << "Username: " << user.username << endl;
-        cout << "Password: " << user.password << endl;
-        cout << "========================" << endl;
+        cout << "=============================" << endl;   
+        cout << "| Username : " << user.username << endl;
+        cout << "| Password : " << user.password << endl;
+        cout << "=============================" << endl;  
     }
 
     file.close();
@@ -861,9 +873,13 @@ void user(string username)
             }
             break;
         case 2:
-            cout << "1. Jenis Kamar" << endl;
-            cout << "2. Nomor Kamar" << endl;
-            cout << "3. Harga Kamar" << endl;
+            cout << "==========================================" << endl;
+            cout << "|     Mencari Data Kamar berdasarkan     |" << endl;
+            cout << "------------------------------------------" << endl;
+            cout << "|    [ 1 ]  Jenis Kamar                  |" << endl;
+            cout << "|    [ 2 ]  Nomor Kamar                  |" << endl;
+            cout << "|    [ 3 ]  Harga Kamar                  |" << endl;
+            cout << "==========================================" << endl;
             cout << "Pilih : ";
             int pilih;
             cin >> pilih;
@@ -1072,7 +1088,7 @@ void admin()
                 getline(cin, cari);
                 Node *result = searchByJenis(cari, head);
                 if (result) {
-                    cout << "Data ditemukan:" <<endl;
+                    cout << "\nData ditemukan pada" <<endl;
                     displayRoomDetails(result->data);
                 } else {
                     cout << "Data tidak ditemukan." << endl;
@@ -1107,14 +1123,12 @@ void admin()
                 }
                 system("pause");
             }
-
-
             break;
         case 7:
             viewReservationHistory();
             break;
         default:
-            cout << "Pilihan tidak valid, silahkan pilih sesuai menu yang tersedia" << endl;
+            cout << "Kembali ke menu sebelumnya" << endl;
         }
         system("pause");
     } while (pilihan != 0);
@@ -1171,7 +1185,7 @@ void login()
         cout << "|          FORM LOGIN          |" << endl;
         cout << "================================" << endl;
         cout << "|    [ 1 ] Login Admin         |" << endl;
-        cout << "|    [ 2 ] Login Pengguna      |" << endl;
+        cout << "|    [ 2 ] Login Pelanggan     |" << endl;
         cout << "|    [ 3 ] Kembali             |" << endl;
         cout << "================================" << endl;
         cout << "Pilihan : ";
